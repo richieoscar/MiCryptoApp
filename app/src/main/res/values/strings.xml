@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MiCrypto</string>
+    <string name="naira"> N</string>
+    <string name="divider">   |  </string>
+    <string name="one">1</string>
 </resources>

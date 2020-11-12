@@ -13,8 +13,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.micrypto.CoinRetrofitInstance;
-import com.example.micrypto.datasource.LocalDataSource;
-import com.example.micrypto.datasource.RemoteDataSource;
 import com.example.micrypto.db.CoinDao;
 import com.example.micrypto.db.CoinRoomDatabase;
 import com.example.micrypto.interfaces.CoinApiInterface;

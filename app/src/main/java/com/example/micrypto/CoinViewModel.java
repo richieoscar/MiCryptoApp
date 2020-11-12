@@ -1,8 +1,11 @@
 package com.example.micrypto;
 
 import android.app.Application;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,6 +20,8 @@ public class CoinViewModel extends AndroidViewModel {
 
    public  CoinRepository repository;
     public LiveData<List<CoinEntity>> mAllCoins;
+
+   public String price;
 
     public CoinViewModel(@NonNull Application application) {
         super(application);
@@ -35,6 +40,6 @@ public class CoinViewModel extends AndroidViewModel {
         return mAllCoins;
     }
 
-    
+
 
 }

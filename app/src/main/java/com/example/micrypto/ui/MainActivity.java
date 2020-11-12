@@ -1,6 +1,7 @@
-package com.example.micrypto.ui;
+ package com.example.micrypto.ui;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.Observer;
@@ -12,18 +13,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.micrypto.CoinRetrofitInstance;
 import com.example.micrypto.CoinViewModel;
 import com.example.micrypto.R;
 import com.example.micrypto.adapter.CoinAdapter;
-import com.example.micrypto.datasource.RemoteDataSource;
+
 import com.example.micrypto.interfaces.CoinApiInterface;
 import com.example.micrypto.model.CoinEntity;
 import com.example.micrypto.model.JsonMarket;
@@ -42,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
     private CoinAdapter adapter;
     private ProgressBar progressBar;
     SwipeRefreshLayout swipeRefreshLayout;
-
+    TextView header;
+    EditText price;
+    Button set;
+    ImageButton cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +59,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
-
+        bindViews();
         setUpRecyclerView();
         setUpViewModel();
 
         refresh();
 
+    }
+
+    private void bindViews() {
+        header = findViewById(R.id.textView_target_price);
+        price = findViewById(R.id.editText_price);
+        set = findViewById(R.id.button_set);
+        cancel = findViewById(R.id.imageButton);
     }
 
     private void showProgressBar(){
@@ -128,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
         switch (id){
             case R.id.item_settings:
                 int nighMode = AppCompatDelegate.getDefaultNightMode();
-                if(nighMode == AppCompatDelegate.MODE_NIGHT_YES){
+
+                if(nighMode == AppCompatDelegate.MODE_NIGHT_YES ){
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 }
                 else
@@ -142,11 +159,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                     return  true;
+
+            case R.id.item_price:
+                priceAlert();
+                return  true;
                 
 
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    private void priceAlert(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+       final View view = inflater.inflate(R.layout.price_alert,null);
+        builder.setView(R.layout.price_alert);
+
+       Button set = view.findViewById(R.id.button_set);
+       set.setOnClickListener(v->{
+           EditText price = view.findViewById(R.id.editText_price);
+           viewModel.price = price.getText().toString();
+           Toast.makeText(this, "Notification set", Toast.LENGTH_SHORT).show();
+           finish();
+       });
+        builder.show();
+
     }
 }
