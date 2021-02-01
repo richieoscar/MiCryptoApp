@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.example.micrypto.model.CoinDataEntity;
 import com.example.micrypto.model.CoinEntity;
 
 import java.util.List;
@@ -26,5 +27,7 @@ public interface CoinDao {
 
     @Query("SELECT * from coin_table WHERE id = :id")
     LiveData<List<CoinEntity>> getCoinBYId(int id);
+
+
 
 }

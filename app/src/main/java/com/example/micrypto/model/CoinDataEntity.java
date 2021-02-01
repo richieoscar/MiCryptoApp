@@ -2,11 +2,11 @@ package com.example.micrypto.model;
 
 import androidx.room.Entity;
 
-@Entity(tableName = "coin")
-public class CoinData {
 
-    
-private Status status;
+public class CoinDataEntity {
+
+
+ private Status status;
  private CoinEntity coinData;
 
     public Status getStatus() {

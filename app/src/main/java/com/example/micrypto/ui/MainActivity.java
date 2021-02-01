@@ -1,15 +1,23 @@
- package com.example.micrypto.ui;
+package com.example.micrypto.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,78 +30,72 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.micrypto.CoinRetrofitInstance;
 import com.example.micrypto.CoinViewModel;
 import com.example.micrypto.R;
 import com.example.micrypto.adapter.CoinAdapter;
 
-import com.example.micrypto.interfaces.CoinApiInterface;
 import com.example.micrypto.model.CoinEntity;
-import com.example.micrypto.model.JsonMarket;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    RecyclerView coinRv;
+    private RecyclerView coinRv;
     public CoinViewModel viewModel;
     private CoinAdapter adapter;
     private ProgressBar progressBar;
-    SwipeRefreshLayout swipeRefreshLayout;
-    TextView header;
-    EditText price;
-    Button set;
-    ImageButton cancel;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private Context context;
+    private AlertDialog alertDialog;
+    private static final int NOTIFICATION_ID = 0;
+    private static final String PRIMARY_CHANNEL_ID = "primary_notification_channel";
+    private NotificationManager notificationManager;
+    private static final String ACTION_UPDATE_NOTIFICATION = "com.example.micrypto.ui.ACTION_UPDATE_NOTIFICATION";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         progressBar = findViewById(R.id.progressBar);
+
         swipeRefreshLayout = findViewById(R.id.swipe_refresh);
-        bindViews();
-        setUpRecyclerView();
+        createNotification();
         setUpViewModel();
+        setUpRecyclerView();
+
+
 
         refresh();
 
     }
 
-    private void bindViews() {
-        header = findViewById(R.id.textView_target_price);
-        price = findViewById(R.id.editText_price);
-        set = findViewById(R.id.button_set);
-        cancel = findViewById(R.id.imageButton);
-    }
 
-    private void showProgressBar(){
+    private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
 
     }
-    private  void hideProgressBar(){
+
+    private void hideProgressBar() {
         progressBar.setVisibility(View.INVISIBLE);
 
 
     }
 
-    private void setUpRecyclerView(){
+    private void setUpRecyclerView() {
+
         coinRv = findViewById(R.id.coin_rv);
-         adapter = new CoinAdapter(this);
+        adapter = new CoinAdapter(this);
         coinRv.setAdapter(adapter);
         coinRv.setLayoutManager(new LinearLayoutManager(this));
 
 
     }
 
-    private void refresh(){
+    private void refresh() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -106,22 +108,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setUpViewModel(){
+    private void setUpViewModel() {
 
         showProgressBar();
-       // swipeRefreshLayout.setRefreshing(true);
+        // swipeRefreshLayout.setRefreshing(true);
         viewModel = new ViewModelProvider(this).get(CoinViewModel.class);
-       viewModel.getAllCoins().observe(this, new Observer<List<CoinEntity>>() {
-           @Override
-           public void onChanged(List<CoinEntity> coinEntities) {
+        viewModel.getAllCoins().observe(this, new Observer<List<CoinEntity>>() {
+            @Override
+            public void onChanged(List<CoinEntity> coinEntities) {
 
-               adapter.setCoins(coinEntities);
-               swipeRefreshLayout.setRefreshing(false);
-               hideProgressBar();
+                adapter.setCoins(coinEntities);
 
-           }
+                swipeRefreshLayout.setRefreshing(false);
 
-       });
+
+            }
+
+        });
+
     }
 
 
@@ -129,41 +133,26 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.crypto_menu, menu);
-
-        int nightMode = AppCompatDelegate.getDefaultNightMode();
-        if(nightMode == AppCompatDelegate.MODE_NIGHT_YES){
-            menu.findItem(R.id.item_settings).setTitle("Day Mode");
-        }
-        else menu.findItem(R.id.item_settings).setTitle("Night Mode");
-        return  true;
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id){
-            case R.id.item_settings:
-                int nighMode = AppCompatDelegate.getDefaultNightMode();
-
-                if(nighMode == AppCompatDelegate.MODE_NIGHT_YES ){
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-                else
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
-                Log.d(TAG, "onOptionsItemSelected: recreate");
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        recreate();
-                    }
-                });
-                    return  true;
+        switch (id) {
+            case R.id.item_about:
+                Toast.makeText(this, "We are upcoming in app development", Toast.LENGTH_SHORT).show();
+                return true;
 
             case R.id.item_price:
                 priceAlert();
-                return  true;
-                
+                return true;
+            case R.id.item_search:
+                searchForCoin();
+                Toast.makeText(this, "searching", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.item_fav:
+                gotoFavoritesActivity();
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -171,20 +160,82 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void priceAlert(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = LayoutInflater.from(this);
-       final View view = inflater.inflate(R.layout.price_alert,null);
-        builder.setView(R.layout.price_alert);
+    private void gotoFavoritesActivity() {
+        startActivity(new Intent(this, FavoriteActivity.class));
+    }
 
-       Button set = view.findViewById(R.id.button_set);
-       set.setOnClickListener(v->{
-           EditText price = view.findViewById(R.id.editText_price);
-           viewModel.price = price.getText().toString();
-           Toast.makeText(this, "Notification set", Toast.LENGTH_SHORT).show();
-           finish();
-       });
-        builder.show();
+    private void searchForCoin() {
 
     }
+
+    public void priceAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final View view = inflater.inflate(R.layout.price_alert, null);
+        builder.setView(view);
+
+        alertDialog = builder.create();
+        alertDialog.show();
+
+        Button set = view.findViewById(R.id.button_set);
+        ImageButton imageButton = view.findViewById(R.id.imageButton);
+
+        set.setOnClickListener((v) -> {
+            EditText price = view.findViewById(R.id.editText_price);
+            if (price.getText().toString().isEmpty()) price.setError("price required");
+            else {
+                viewModel.price = price.getText().toString();
+                price.setText("");
+                Toast.makeText(MainActivity.this, "Notification set" + viewModel.price, Toast.LENGTH_SHORT).show();
+                send();
+                alertDialog.dismiss();
+            }
+
+        });
+
+        imageButton.setOnClickListener((v) -> {
+            alertDialog.dismiss();
+
+        });
+
+    }
+
+    private NotificationCompat.Builder getNotificationBuilder() {
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, PRIMARY_CHANNEL_ID)
+                .setContentTitle("Price Alert")
+                .setContentText(String.valueOf(viewModel.price))
+                // .setSmallIcon(R.drawable.ic_android)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL);
+
+        return builder;
+    }
+
+    private void createNotification() {
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    PRIMARY_CHANNEL_ID, "Mascot Notifications", NotificationManager.IMPORTANCE_HIGH);
+
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setDescription("Noitification from Mi Crypto");
+            notificationChannel.enableLights(true);
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+        }
+    }
+
+    private void send() {
+        Intent updateIntent = new Intent(ACTION_UPDATE_NOTIFICATION);
+        PendingIntent updatePendingIntent = PendingIntent.getBroadcast
+                (this, NOTIFICATION_ID, updateIntent, PendingIntent.FLAG_ONE_SHOT);
+        NotificationCompat.Builder notifyBuilder = getNotificationBuilder();
+        notificationManager.notify(NOTIFICATION_ID, notifyBuilder.build());
+    }
+
 }

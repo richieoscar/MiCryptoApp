@@ -32,9 +32,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         this.coins = coins;
         context = ctx;
     }
-    public CoinAdapter(LiveData<List<CoinEntity>> coins){
 
-    }
 
     public CoinAdapter(Context ctx){
         context = ctx;
@@ -69,7 +67,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         String price7 = String.format("%.2f", value3);
 
         holder.price.setText("$" + price);
-        holder.priceIn24Hours.setText(price24 + "%" + " 24hrs");
+        holder.priceIn24Hours.setText(price24 + "%" + " 1d");
         holder.priceIn7days.setText(price7 + "%" + " 7d");
         holder.coinSymbol.setText(currentCoins.getSymbol());
         Log.d(TAG, "onBindViewHolder: bind image");
@@ -114,8 +112,11 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         public void onClick(View v) {
             int position = getAdapterPosition();
             CoinEntity selectedCoin = coins.get(position);
+            int id = coins.get(position).getID();
+
             Intent intent = new Intent(v.getContext(), DetailsActivity.class);
             intent.putExtra("CoinEntity", selectedCoin);
+            intent.putExtra("coinId", id);
             v.getContext().startActivity(intent);
 
 

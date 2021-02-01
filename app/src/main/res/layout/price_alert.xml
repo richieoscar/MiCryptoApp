@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#75D3CFCF">
+    android:background="#FFFFFF">
 
     <EditText
         android:id="@+id/editText_price"
-        android:layout_width="242dp"
+        android:layout_width="0dp"
         android:layout_height="46dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/edittext_shape"
         android:ems="10"
         android:hint="Price"
-        android:inputType="textPersonName"
+        android:inputType="textPersonName|phone"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -23,27 +25,31 @@
 
     <Button
         android:id="@+id/button_set"
-        android:layout_width="137dp"
-        android:layout_height="47dp"
+        android:layout_width="218dp"
+        android:layout_height="43dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/button_shape"
+        android:inputType="number"
         android:text="Set"
+        android:textAllCaps="false"
         android:textColor="#FFFFFF"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_price"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView_target_price"
         android:layout_width="274dp"
         android:layout_height="39dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
+        android:fontFamily="@font/roboto"
         android:text="Set Target Price"
         android:textAlignment="center"
+        android:textColor="@color/primaryDarkColor"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -56,12 +62,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@color/green"
         app:layout_constraintBottom_toTopOf="@+id/textView_target_price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.957"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/btn_dialog" />
+        app:srcCompat="@drawable/ic_baseline_close_24"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

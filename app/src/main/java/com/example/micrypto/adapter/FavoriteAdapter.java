@@ -16,50 +16,44 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.micrypto.R;
 import com.example.micrypto.model.CoinEntity;
+import com.example.micrypto.model.FavoriteList;
 import com.example.micrypto.ui.DetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder> {
+public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.FavoriteListViewHolder> {
     private static final String TAG = "CoinAdapter";
-    List<CoinEntity> coins = new ArrayList<>();
+    List<FavoriteList> coins = new ArrayList<>();
 
     Context context;
     final String BASE_URL = "https://s2.coinmarketcap.com/static/img/coins/";
 
-    public CoinAdapter(List<CoinEntity> coins, Context ctx) {
+    public FavoriteAdapter(List<FavoriteList> coins, Context ctx) {
         this.coins = coins;
         context = ctx;
     }
-    public CoinAdapter(LiveData<List<CoinEntity>> coins){
 
-    }
-
-    public CoinAdapter(Context ctx){
-        context = ctx;
-    }
 
     @NonNull
     @Override
-    public CoinViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FavoriteListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.list_coin, parent, false);
 
-        return new CoinViewHolder(view);
+        return new FavoriteListViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CoinViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FavoriteListViewHolder holder, int position) {
 
-        CoinEntity currentCoins = coins.get(position);
+        FavoriteList currentCoins = coins.get(position);
 
-       int coinId = currentCoins.getID();
+       int coinId = currentCoins.getId();
        String imgType = ".png";
        String imgSize = "128x128/";
        String imgUrl = BASE_URL +imgSize +coinId +imgType;
 
-        holder.name.setText(currentCoins.getName());
         double value = currentCoins.getQuote().getUSD().getPrice();
         double value2 = currentCoins.getQuote().getUSD().getPercentChangePerDay();
         double value3 = currentCoins.getQuote().getUSD().getPercentChangeInSevenDays();
@@ -68,6 +62,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         String price24 = String.format("%.2f", value2);
         String price7 = String.format("%.2f", value3);
 
+        holder.name.setText(currentCoins.getName());
         holder.price.setText("$" + price);
         holder.priceIn24Hours.setText(price24 + "%" + " 1d");
         holder.priceIn7days.setText(price7 + "%" + " 7d");
@@ -82,13 +77,13 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         return coins.size();
     }
 
-    public void setCoins(List<CoinEntity> cryptoCoin) {
+    public void setCoins(List<FavoriteList> cryptoCoin) {
         coins.clear();
         coins.addAll(cryptoCoin);
         notifyDataSetChanged();
     }
 
-    public class CoinViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class FavoriteListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView name;
         TextView price;
@@ -97,7 +92,7 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         TextView coinSymbol;
         ImageView imageView;
 
-        public CoinViewHolder(@NonNull View itemView) {
+        public FavoriteListViewHolder(@NonNull View itemView) {
             super(itemView);
 
             name = itemView.findViewById(R.id.textView_name);
@@ -112,14 +107,14 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
 
         @Override
         public void onClick(View v) {
-            int position = getAdapterPosition();
-            CoinEntity selectedCoin = coins.get(position);
-            int id = coins.get(position).getID();
-
-            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
-            intent.putExtra("CoinEntity", selectedCoin);
-            intent.putExtra("coinId", id);
-            v.getContext().startActivity(intent);
+//            int position = getAdapterPosition();
+//            FavoriteList selectedCoin = coins.get(position);
+//            int id = coins.get(position).getId();
+//
+//            Intent intent = new Intent(v.getContext(), DetailsActivity.class);
+//            intent.putExtra("favCoin", selectedCoin);
+//            intent.putExtra("coinId", id);
+//            v.getContext().startActivity(intent);
 
 
         }

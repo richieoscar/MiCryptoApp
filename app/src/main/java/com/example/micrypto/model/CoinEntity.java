@@ -7,11 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
-@Entity(tableName = "coin_table")
+@Entity(tableName = "coin_table", indices = {@Index(value = "symbol", unique = true)})
 public class CoinEntity  implements Parcelable {
     protected CoinEntity(Parcel in) {
         ID = in.readInt();
@@ -22,6 +23,7 @@ public class CoinEntity  implements Parcelable {
         quote = in.readParcelable(Quote.class.getClassLoader());
 
     }
+    public CoinEntity(){}
 
     public CoinEntity(int ID, @NonNull String name, @NonNull String symbol, @NonNull String slug, int numberMarketPair, Quote quote) {
         this.ID = ID;
@@ -64,15 +66,17 @@ public class CoinEntity  implements Parcelable {
         this.numberMarketPair = numberMarketPair;
     }
 
+
     @SerializedName("id")
     @ColumnInfo(name = "id")
+    @NonNull
     private int ID;
 
     @NonNull
     private String name;
 
-    @NonNull
     @PrimaryKey
+    @NonNull
     private String symbol;
 
     @NonNull
@@ -130,6 +134,18 @@ public class CoinEntity  implements Parcelable {
         dest.writeString(slug);
         dest.writeInt(numberMarketPair);
         dest.writeParcelable(quote, 0);
+    }
+
+    @Override
+    public String toString() {
+        return "CoinEntity{" +
+                "ID=" + ID +
+                ", name='" + name + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", slug='" + slug + '\'' +
+                ", numberMarketPair=" + numberMarketPair +
+                ", quote=" + quote +
+                '}';
     }
 }
 

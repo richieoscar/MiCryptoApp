@@ -4,4 +4,16 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="green">#2A952E</color>
+    <color name="ash">#75D3CFCF</color>
+    <color name="orange">#FDBE51</color>
+    <color name="light_green">#0AC18E</color>
+
+    <color name="primaryColor">#ffa000</color>
+    <color name="primaryLightColor">#ffd149</color>
+    <color name="primaryDarkColor">#c67100</color>
+    <color name="secondaryColor">#ffa000</color>
+    <color name="secondaryLightColor">#ffd149</color>
+    <color name="secondaryDarkColor">#c67100</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#efefef</color>
 </resources>
